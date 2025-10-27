@@ -1,0 +1,35 @@
+// Prisma schema for chat sessions and messages
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Chat Session model - represents a conversation
+model Session {
+  id        String    @id @default(cuid())
+  title     String    @default("New Chat")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+
+  @@index([createdAt(sort: Desc)])
+}
+
+// Message model - stores individual chat messages
+model Message {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String   // "user" or "assistant"
+  content   String   @db.Text
+  imageUrl  String?  // Optional: for image messages
+  createdAt DateTime @default(now())
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
