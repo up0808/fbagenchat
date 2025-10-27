@@ -59,7 +59,7 @@ const withTimeout = (promise: Promise<Response>, ms = 8000) =>
       }));
 
       return {
-        source: 'Google Search'
+        source: 'Google Search',
         query,
         results,
         timestamp: new Date().toISOString(),
